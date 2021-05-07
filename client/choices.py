@@ -1,0 +1,3 @@
+STATUS_CLIENT_CHOICES = (
+
+)
