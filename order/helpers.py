@@ -112,7 +112,7 @@ def update_team_and_status(post_request, user_request):
     status_value = post_request.get('status_value', None)
     if status_value == 'accepted':
         send_sms(wash_order.client.phone, 'Ваш заказ принят, итоговая сумма {}'.format(wash_order_items['total_summa']))
-    WashOrder.objects.filter(pk=pk).update(team_id=team_value if team_value is not '' else wash_order.team_id,
+    WashOrder.objects.filter(pk=pk).update(team_id=team_value if team_value != '' else wash_order.team_id,
                                            status=status_value)
     return dict(
         {'back_url': reverse(post_request.get('back_url', 'wash-order-detail'), kwargs={'pk': pk}),
