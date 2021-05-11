@@ -27,7 +27,7 @@ def payment_income(amount, payment_method, comment,
     elif payment_method == 'card' and float(amount) > 0:
         Cashier.objects.filter(payment_type='card').update(amount=F('amount') + float(amount))
 
-    payment = PaymentLog.objects.create(
+    PaymentLog.objects.create(
         amount=amount,
         payment_method=payment_method,
         outcat=outcat,
@@ -40,7 +40,7 @@ def payment_income(amount, payment_method, comment,
     )
 
 
-def payment_outcome(amount, payment_type, payment_method, comment,
+def payment_outcome(amount, payment_method, comment,
                     user, aor=False, outcat=0, outlay=0, **kwargs):
     """
     Create PaymentLog object for income cash payment
@@ -69,13 +69,12 @@ def payment_outcome(amount, payment_type, payment_method, comment,
         comment += " Расход за заказ №{}".format(outlay)
 
     if payment_method == 'cash' and float(amount) > 0 and outcat < 9:
-        Cashier.objects.filter(payment_type=payment_type).update(amount=F('amount') - float(amount))
+        Cashier.objects.filter(payment_type='uzs').update(amount=F('amount') - float(amount))
     elif payment_method == 'enumeration' and float(amount) > 0:
-        Cashier.objects.filter(payment_type='bank').update(amount=F('amount') - float(amount))
+        Cashier.objects.filter(payment_type='card').update(amount=F('amount') - float(amount))
 
-    payment = PaymentLog.objects.create(
+    PaymentLog.objects.create(
         amount=amount,
-        payment_type=payment_type,
         payment_method=payment_method,
         outcat=outcat,
         outlay=outlay,
@@ -85,11 +84,3 @@ def payment_outcome(amount, payment_type, payment_method, comment,
         aor=aor,
         payment_log_type='outcome'
     )
-
-    return dict(
-        {'pk': payment.pk,
-         'created': payment.created.strftime('%d-%m-%Y | %H:%M'),
-         'payment_method': payment.payment_method,
-         'payment_type': payment.payment_type,
-         'amount': payment.amount,
-         'comment': payment.comment})

@@ -1,23 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from order.choices import STATUS_COLOR_CHOICES
+from order.choices import WASH_ORDER_STATUS_CHOICES, TEAM_STATUS_CHOICES
 
 
-class SettingStatus(models.Model):
-    name = models.CharField(max_length=255,
-                            verbose_name='Название')
-    style = models.CharField(max_length=255,
-                             blank=True, null=True,
-                             choices=STATUS_COLOR_CHOICES,
-                             verbose_name='Стиль статуса')
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'Настройка статуса'
-        verbose_name_plural = 'Настройки статуса'
+# class SettingStatus(models.Model):
+#     name = models.CharField(max_length=255,
+#                             verbose_name='Название')
+#     style = models.CharField(max_length=255,
+#                              blank=True, null=True,
+#                              choices=STATUS_COLOR_CHOICES,
+#                              verbose_name='Стиль статуса')
+#
+#     def __str__(self):
+#         return self.name
+#
+#     class Meta:
+#         verbose_name = 'Настройка статуса'
+#         verbose_name_plural = 'Настройки статуса'
 
 
 class Team(models.Model):
@@ -28,6 +28,7 @@ class Team(models.Model):
     car_numb = models.CharField(max_length=255,
                                 verbose_name='Номер машиины')
     status = models.IntegerField(default=0,
+                                 choices=TEAM_STATUS_CHOICES,
                                  verbose_name='Статус')
 
     def __str__(self):
@@ -56,8 +57,8 @@ class WashOrder(models.Model):
     user = models.ForeignKey(User,
                              on_delete=models.CASCADE,
                              verbose_name='Пользователь')
-    status = models.ForeignKey('SettingStatus',
-                               on_delete=models.SET_NULL,
+    status = models.CharField(max_length=255,
+                              choices=WASH_ORDER_STATUS_CHOICES,
                                null=True, blank=True,
                                verbose_name='Статус')
 

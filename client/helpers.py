@@ -1,7 +1,9 @@
+import requests
 from django.urls import reverse
+from requests.auth import HTTPBasicAuth
 
-from client.models import Client, Region, ClientType
-from order.models import WashOrder, Setting, SettingStatus
+from client.models import Client, Region, ClientType, Sms
+from order.models import WashOrder, Setting
 
 
 def create_client(post_request, user_request):
@@ -65,11 +67,39 @@ def delete_client_type(post_request, user_request):
 
 def create_wash_order_from_client_list(post_request, user_request):
     client_id = post_request.get('client_id', None)
-    status = SettingStatus.objects.get(name='В процессе')
     wash_order = WashOrder.objects.create(client_id=client_id,
                                           user_id=user_request.id,
-                                          status_id=status.pk)
+                                          status='during')
 
     return dict(
         {'back_url': reverse(post_request.get('back_url', 'wash-order-detail'), kwargs={'pk': wash_order.pk}),
          'data': ''})
+
+
+def send_sms(to, text):
+    try:
+        sms = Sms.objects.create(msdsn=to, text=text)
+        sms_id = f"alc{sms.id}"
+        print(to)
+        url = 'http://91.204.239.44/broker-api/send'
+        data = {
+            "messages": [
+                {
+                    "recipient": to,
+                    "message-id": sms_id,
+                    "sms": {
+                        "originator": "3700",
+                        "content": {
+                            "text": str(text)
+                        }
+                    }
+                }
+            ]
+        }
+        headers = {'Content-Type': 'application/json'}
+        r = requests.post(url, json=data,
+                          headers=headers, auth=HTTPBasicAuth('aladdincarpet', 'iG!vO68zT'))
+        return r
+    except Exception as ex:
+        print(ex)
+        return ex

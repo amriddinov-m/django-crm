@@ -1,11 +1,6 @@
 from django.contrib import admin
 
-from order.models import SettingStatus, Team, WashOrder, WashOrderItem, Setting
-
-
-@admin.register(SettingStatus)
-class SettingStatusAdmin(admin.ModelAdmin):
-    pass
+from order.models import Team, WashOrder, WashOrderItem, Setting
 
 
 @admin.register(Team)
@@ -26,5 +21,3 @@ class WashOrderItemAdmin(admin.ModelAdmin):
 @admin.register(Setting)
 class SettingAdmin(admin.ModelAdmin):
     pass
-
-

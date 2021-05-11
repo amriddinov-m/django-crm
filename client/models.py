@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -56,3 +57,31 @@ class Client(models.Model):
     class Meta:
         verbose_name = 'Клинет'
         verbose_name_plural = 'Клиенты'
+
+
+class Car(models.Model):
+    worker = models.ForeignKey(User,
+                               on_delete=models.CASCADE,
+                               verbose_name='Сотрудник')
+    car_number = models.CharField(max_length=255,
+                                  verbose_name='Номер машины')
+
+    def __str__(self):
+        return str(self.car_number)
+
+    class Meta:
+        verbose_name = 'Машина'
+        verbose_name_plural = 'Машины'
+
+
+class Sms(models.Model):
+    msdsn = models.CharField(max_length=255)
+    text = models.CharField(verbose_name='Текст', max_length=255)
+    date = models.DateField(verbose_name='Время', auto_now_add=True)
+
+    def __str__(self):
+        return "user:{}|text:{}".format(self.msdsn, self.text)
+
+    class Meta:
+        verbose_name = 'СМС'
+        verbose_name_plural = 'СМС'

@@ -93,16 +93,31 @@
                                                                title="Изменить"
                                                                class="text-decoration-none text-info"
                                                                style="cursor: pointer"
-                                                               id="id_status_text">{{ wash_order.status }}</a>
+                                                               id="id_status_text">{{ wash_order.get_status_display }}</a>
                                                         </span>
                                                             <select class="form-control bg-white d-none update_team_or_status"
                                                                     autocomplete="off" name="status_value"
                                                                     id="id_select_status">
-                                                                {% for status in statuses %}
-                                                                    {% if not status.id == wash_order.status.id %}
-                                                                        <option value="{{ status.id }}">{{ status.name }}</option>
-                                                                    {% endif %}
-                                                                {% endfor %}
+                                                                {#                                                                {% for status in statuses %}#}
+                                                                {#                                                                    {% if not status == wash_order.status %}#}
+                                                                <option value="during"
+                                                                        {% if wash_order.status == 'during' %}selected{% endif %}>
+                                                                    В процессе
+                                                                </option>
+                                                                <option value="accepted"
+                                                                        {% if wash_order.status == 'accepted' %}selected{% endif %}>
+                                                                    Принято
+                                                                </option>
+                                                                <option value="submitted"
+                                                                        {% if wash_order.status == 'submitted' %}selected{% endif %}>
+                                                                    Отправлен
+                                                                </option>
+                                                                <option value="completed"
+                                                                        {% if wash_order.status == 'completed' %}selected{% endif %}>
+                                                                    Завершен
+                                                                </option>
+                                                                {#                                                                    {% endif %}#}
+                                                                {#                                                                {% endfor %}#}
                                                             </select>
                                                         </td>
                                                     </form>
@@ -125,7 +140,7 @@
                     </div>
                 </div>
             </div>
-        <div class="row">
+            <div class="row">
                 <div class="col-md-12">
                     <h5 class="ml-3 mt-2">Список ковров</h5>
                 </div>
@@ -199,6 +214,7 @@
                                     <td id="id_td_summa_{{ item.pk }}"
                                         class="td_summa_list">{{ item.summa|intcomma }}</td>
                                     <td>
+                                        {% if item.wash_order.status != 'accepted' %}
                                         <button class="btn btn-outline-danger btn-sm mr-2"
                                                 onclick="removeWashOrderItemModalShow({{ item.id }}, '{{ item.area }}')"
                                                 data-target="#removeWashOrderItemModal">
@@ -226,6 +242,7 @@
                                             </svg>
                                         </button>
                                     </td>
+                                {% endif %}
                                 </tr>
                             {% endfor %}
                             <tr class="table-dark">
@@ -283,30 +300,30 @@
                         Добавить
                     </button>
                 </div>
-            <div class="col-md-12">
-                    <h5 class="text-dark ml-2">Список оплат  по заказу</h5>
+                <div class="col-md-12">
+                    <h5 class="text-dark ml-2">Список оплат по заказу</h5>
                 </div>
                 <div class="col-md-12">
                     <table class="table table-bordered text-center mt-2">
-                            <thead class="thead-dark">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Дата</th>
+                            <th scope="col">Сумма</th>
+                            <th scope="col">Метод оплаты</th>
+                            <th scope="col">Комментарии</th>
+                        </tr>
+                        </thead>
+                        <tbody id="id_wash_order_item_list" class="bg-light table_tr_list">
+                        {% for payment in payments %}
                             <tr>
-                                <th scope="col">Дата</th>
-                                <th scope="col">Сумма</th>
-                                <th scope="col">Метод оплаты</th>
-                                <th scope="col">Комментарии</th>
+                                <td>{{ payment.created }}</td>
+                                <td>{{ payment.amount|intcomma }}</td>
+                                <td>{{ payment.get_payment_method_display }}</td>
+                                <td>{{ payment.comment }}</td>
                             </tr>
-                            </thead>
-                            <tbody id="id_wash_order_item_list" class="bg-light table_tr_list">
-                            {% for payment in payments %}
-                                <tr>
-                                    <td>{{ payment.created }}</td>
-                                    <td>{{ payment.amount|intcomma }}</td>
-                                    <td>{{ payment.get_payment_method_display }}</td>
-                                    <td>{{ payment.comment }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
 

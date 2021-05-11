@@ -16,37 +16,39 @@
     <!-- breadcrumb-end -->
 
     <div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h4>Список заказов в процессе</h4>
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Список заказов в процессе</h4>
+            </div>
         </div>
-    </div>
-        <table class="table table-bordered text-center">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col">№</th>
-                <th scope="col">Команда</th>
-                <th scope="col">Клиент</th>
-                <th scope="col">Статус</th>
-                <th scope="col">Дата старта</th>
-                <th scope="col">Дата окончания</th>
-            </tr>
-            </thead>
-            <tbody class="bg-light">
-            {% for wash_order in wash_orders %}
+        <div class="table-responsive">
+            <table class="table table-bordered text-center">
+                <thead class="thead-dark">
                 <tr>
-                    <th scope="row">{{ wash_order.pk }}</th>
-                    <td>{{ wash_order.team.worker_name|default:'-' }}</td>
-                    <td><a class="text-info text-decoration-none"
-                           href="{% url 'client-detail' wash_order.client.pk %}">{{ wash_order.client.full_name }}</a>
-                    </td>
-                    <td class="{{ wash_order.status.style }}">{{ wash_order.status|default:'-' }}</td>
-                    <td>{{ wash_order.start_time|default:'-' }}</td>
-                    <td>{{ wash_order.end_time|default:'-' }}</td>
+                    <th scope="col">№</th>
+                    <th scope="col">Команда</th>
+                    <th scope="col">Клиент</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Дата старта</th>
+                    <th scope="col">Дата окончания</th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="bg-light">
+                {% for wash_order in wash_orders %}
+                    <tr>
+                        <th scope="row">{{ wash_order.pk }}</th>
+                        <td>{{ wash_order.team.worker_name|default:'-' }}</td>
+                        <td><a class="text-info text-decoration-none"
+                               href="{% url 'client-detail' wash_order.client.pk %}">{{ wash_order.client.full_name }}</a>
+                        </td>
+                        <td class="text-success">{{ wash_order.get_status_display }}</td>
+                        <td>{{ wash_order.start_time|default:'-' }}</td>
+                        <td>{{ wash_order.end_time|default:'-' }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
 {% endblock content %}

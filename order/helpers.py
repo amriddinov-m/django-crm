@@ -1,7 +1,9 @@
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.template import loader, Context
 from django.urls import reverse
 
+from client.helpers import send_sms
 from order.models import Team, WashOrder, WashOrderItem
 from payment.helpers import payment_income
 
@@ -32,11 +34,11 @@ def delete_team(post_request, user_request):
 def create_wash_order(post_request, user_request):
     team_id = post_request.get('team', None)
     client_id = post_request.get('client', None)
-    status_id = post_request.get('status', None)
+    status = post_request.get('status', None)
     end_time = post_request.get('end_time', None)
     WashOrder.objects.create(team_id=int(team_id),
                              client_id=int(client_id),
-                             status_id=status_id,
+                             status=status,
                              user=user_request,
                              end_time=end_time)
     return dict(
@@ -105,10 +107,13 @@ def update_wash_order_item(post_request, user_request):
 def update_team_and_status(post_request, user_request):
     pk = post_request.get('wash_order_pk', None)
     wash_order = WashOrder.objects.get(pk=pk)
+    wash_order_items = WashOrderItem.objects.filter(wash_order_id=wash_order.pk).aggregate(total_summa=Sum('summa'))
     team_value = post_request.get('team_value', None)
     status_value = post_request.get('status_value', None)
+    if status_value == 'accepted':
+        send_sms(wash_order.client.phone, 'Ваш заказ принят, итоговая сумма {}'.format(wash_order_items['total_summa']))
     WashOrder.objects.filter(pk=pk).update(team_id=team_value if team_value is not '' else wash_order.team_id,
-                                           status_id=status_value)
+                                           status=status_value)
     return dict(
         {'back_url': reverse(post_request.get('back_url', 'wash-order-detail'), kwargs={'pk': pk}),
          'data': ''})

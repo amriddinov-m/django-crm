@@ -17,8 +17,8 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
-        context['wash_orders'] = WashOrder.objects.filter(status__name='В процессе') \
-            .select_related('team', 'client', 'status')
+        context['wash_orders'] = WashOrder.objects.filter(status='during') \
+            .select_related('team', 'client')
         return context
 
 

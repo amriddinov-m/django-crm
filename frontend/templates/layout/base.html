@@ -18,7 +18,7 @@
 <!-- navbar-start -->
 <nav class="my-navbar navbar navbar-expand-lg navbar-dark">
     <div class="container">
-        <a class="navbar-brand text-white" href="{% url 'home' %}">Aladin Carpet</a>
+        {#        <a class="navbar-brand text-white" href="{% url 'home' %}">Aladin Carpet</a>#}
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -51,7 +51,16 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{% url 'wash-order-list' %}">Список заказов</a>
-                        <a class="dropdown-item" href="{% url 'report-income' %}">Отчет по заказам</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle  text-white" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Касса
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'report-income' %}">Отчеты</a>
+                        <a class="dropdown-item" href="{% url 'outlay-create' %}">Добавить расход</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -73,11 +82,22 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <form action="{% url 'wash-order-list' %}" method="post">
                             {% csrf_token %}
-                            <input type="hidden" id="status_id" name="status_id" value="">
-                            {% for status in wash_order_statuses %}
-                                <button class="dropdown-item" type="submit"
-                                        onclick="$('#status_id').val({{ status.pk }})">{{ status }}</button>
-                            {% endfor %}
+                            <input type="hidden" id="status_id" name="status" value="">
+                            {#                            {% for status in wash_order_statuses %}#}
+
+                            <button class="dropdown-item" type="submit"
+                                    onclick="$('#status_id').val('during')">В процессе
+                            </button>
+                            <button class="dropdown-item" type="submit"
+                                    onclick="$('#status_id').val('accepted')">Принято
+                            </button>
+                            <button class="dropdown-item" type="submit"
+                                    onclick="$('#status_id').val('submitted')">Отправлен
+                            </button>
+                            <button class="dropdown-item" type="submit"
+                                    onclick="$('#status_id').val('completed')">Завершен
+                            </button>
+                            {#                            {% endfor %}#}
                         </form>
                     </div>
                 </li>
