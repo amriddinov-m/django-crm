@@ -1,7 +1,7 @@
 from django.urls import path
 
 from order.views import TeamListView, OrderActionView, TeamDetailView, TeamUpdateView, WashOrderListView, \
-    WashOrderDetailView, WashOrderUpdateView, WashOrderItemUpdateView
+    WashOrderDetailView, WashOrderUpdateView
 
 urlpatterns = [
     path('team-list/', TeamListView.as_view(), name='team-list'),
@@ -10,6 +10,5 @@ urlpatterns = [
     path('wash-order-list/', WashOrderListView.as_view(), name='wash-order-list'),
     path('wash-order-detail/<int:pk>/', WashOrderDetailView.as_view(), name='wash-order-detail'),
     path('wash-order-update/<int:pk>/', WashOrderUpdateView.as_view(), name='wash-order-update'),
-    path('wash-order-item-update/<int:pk>/', WashOrderItemUpdateView.as_view(), name='wash-order-item-update'),
     path('order/action/', OrderActionView.as_view(), name='order_action'),
 ]

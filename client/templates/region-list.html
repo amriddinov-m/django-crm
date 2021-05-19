@@ -27,13 +27,16 @@
             <tbody>
             <tr class="table-bg">
                 <form class="p-2" action="{% url 'client_action' %}" method="post">
-                    <input type="hidden" name="action" value="create_region">
+                    <input type="hidden" id="different_action" name="action" value="create_region">
                     <input type="hidden" name="back_url" value="region-list">
+                    <input type="hidden" id="region_pk" name="region_pk" value="">
                     <th scope="row" class="pl-1">
-                        <input name="name" type="text" class="form-control" placeholder="Название региона" required>
+                        <input name="name" id="id_region_name" type="text" class="form-control"
+                               placeholder="Название региона" required>
                     </th>
                     <td>
-                        <button type="submit" class="btn btn-outline-secondary btn-block p-1 text-center"
+                        <button type="submit" id="id_button_add_or_update"
+                                class="btn btn-outline-secondary btn-block p-1 text-center"
                                 style="margin-top: 2px">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                                  class="bi bi-plus" viewBox="0 0 16 16">
@@ -62,7 +65,7 @@
             {% for region in regions %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ region.name }}</td>
+                    <td id="id_td_region_name_{{ region.pk }}">{{ region.name }}</td>
                     <td>
                         <button class="btn btn-outline-danger btn-sm mr-2"
                                 onclick="removeRegionModalShow({{ region.id }}, '{{ region.name }}')"
@@ -75,13 +78,15 @@
                                       d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
                             </svg>
                         </button>
-                        <a href="{% url 'region-update' region.pk %}" class="btn btn-outline-dark btn-sm mr-2">
+                        <button type="button" class="btn btn-outline-dark btn-sm mr-2"
+                                onclick="updateRegion({{ region.id }},
+                                        $('#id_td_region_name_{{ region.pk }}').text())">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                  style="margin-bottom: 2px"
                                  class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                 <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
                             </svg>
-                        </a>
+                        </button>
                     </td>
                 </tr>
             {% endfor %}
@@ -128,6 +133,13 @@
             $(`#removeRegionName`).text(name)
             $(`#removeRegionModal`).modal('toggle')
             $(`#regionId`).attr('value', id)
+        }
+
+        function updateRegion(id, name) {
+            $(`#id_region_name`).val(name);
+            $(`#id_button_add_or_update`).text('Изменить');
+            $(`#different_action`).val('update_region');
+            $(`#region_pk`).val(id);
         }
     </script>
 {% endblock extra_js %}

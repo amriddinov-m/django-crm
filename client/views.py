@@ -8,7 +8,7 @@ from django.views.generic import TemplateView, UpdateView
 from django.views.generic.base import View
 
 from client.helpers import create_client, delete_client, create_region, delete_region, create_client_type, \
-    delete_client_type, create_wash_order_from_client_list
+    delete_client_type, create_wash_order_from_client_list, update_region, update_client_type
 from client.models import Client, Region, ClientType
 from order.models import WashOrder
 
@@ -30,9 +30,9 @@ class ClientListView(TemplateView):
             context['search_value'] = search_client
         elif client_type_id:
             sort_clients = clients.filter(client_type_id=client_type_id)
-            if sort_clients:
-                context['clients'] = sort_clients
-                context['search_value'] = sort_clients.first().client_type
+            client_type = ClientType.objects.get(id=client_type_id)
+            context['clients'] = sort_clients
+            context['search_value'] = client_type.name
         else:
             context['clients'] = clients.all()
         return context
@@ -66,17 +66,8 @@ class ClientTypeListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ClientTypeListView, self).get_context_data(**kwargs)
-        context['client_types'] = ClientType.objects.all()
+        context['client_types'] = ClientType.objects.all().order_by('-id')
         return context
-
-
-class ClientTypeUpdateView(UpdateView):
-    template_name = 'client-type-update.html'
-    model = ClientType
-    fields = '__all__'
-
-    def get_success_url(self):
-        return reverse('client-type-list')
 
 
 class RegionListView(TemplateView):
@@ -84,17 +75,8 @@ class RegionListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(RegionListView, self).get_context_data(**kwargs)
-        context['regions'] = Region.objects.all()
+        context['regions'] = Region.objects.all().order_by('-id')
         return context
-
-
-class RegionUpdateView(UpdateView):
-    template_name = 'region-update.html'
-    model = Region
-    fields = '__all__'
-
-    def get_success_url(self):
-        return reverse('region-list')
 
 
 class ClientActionView(View):
@@ -110,8 +92,10 @@ class ClientActionView(View):
             'create_client': create_client,
             'delete_client': delete_client,
             'create_region': create_region,
+            'update_region': update_region,
             'delete_region': delete_region,
             'create_client_type': create_client_type,
+            'update_client_type': update_client_type,
             'delete_client_type': delete_client_type,
             'create_wash_order_from_client_list': create_wash_order_from_client_list,
         }

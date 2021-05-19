@@ -103,3 +103,21 @@ def send_sms(to, text):
     except Exception as ex:
         print(ex)
         return ex
+
+
+def update_region(post_request, user_request):
+    region_id = post_request.get('region_pk', None)
+    name = post_request.get('name', None)
+    Region.objects.filter(pk=region_id).update(name=name)
+    return dict(
+        {'back_url': reverse(post_request.get('back_url', 'region-list')),
+         'data': ''})
+
+
+def update_client_type(post_request, user_request):
+    client_type_id = post_request.get('client_type_pk', None)
+    name = post_request.get('name', None)
+    ClientType.objects.filter(pk=client_type_id).update(name=name)
+    return dict(
+        {'back_url': reverse(post_request.get('back_url', 'client-type-list')),
+         'data': ''})

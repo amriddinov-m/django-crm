@@ -105,15 +105,6 @@ class WashOrderUpdateView(UpdateView):
             return reverse(back_url)
 
 
-class WashOrderItemUpdateView(UpdateView):
-    template_name = 'wash-order-item-update.html'
-    model = WashOrderItem
-    fields = '__all__'
-
-    def get_success_url(self):
-        return reverse('wash-order-detail', kwargs={'pk': self.object.wash_order_id})
-
-
 class OrderActionView(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):

@@ -157,16 +157,19 @@
                                     {% csrf_token %}
                                     <div class="pl-1 col-md-3">
                                         <input id="id_x_size" class="form-control wash_order_item_size" type="text"
+                                               autocomplete="off"
                                                name="x_size"
                                                placeholder="x_size" required>
                                     </div>
                                     <div class="col-md-3">
                                         <input id="id_y_size" class="form-control wash_order_item_size" type="text"
+                                               autocomplete="off"
                                                name="y_size"
                                                placeholder="y_size" required>
                                     </div>
                                     <div class="col-md-2">
                                         <input id="id_area" class="form-control" type="text" name="area"
+                                               readonly
                                                placeholder="Площадь">
                                     </div>
                                     <div class="col-md-2">

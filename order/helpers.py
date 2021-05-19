@@ -91,10 +91,10 @@ def delete_wash_order_item(post_request, user_request):
 def update_wash_order_item(post_request, user_request):
     wash_order_item_id = post_request.get('wash_order_item_pk', None)
     wash_order_pk = post_request.get('wash_order_pk', None)
-    x_size = post_request.get('x_size', None)
-    y_size = post_request.get('y_size', None)
-    area = post_request.get('area', None)
-    summa = post_request.get('summa', None).replace(',', '')
+    x_size = post_request.get('x_size', None).replace(',', '.')
+    y_size = post_request.get('y_size', None).replace(',', '.')
+    area = post_request.get('area', None).replace(',', '.')
+    summa = post_request.get('summa', None).replace(u'\xa0', '')
     WashOrderItem.objects.filter(pk=wash_order_item_id).update(x_size=float(x_size),
                                                                y_size=float(y_size),
                                                                area=float(area),

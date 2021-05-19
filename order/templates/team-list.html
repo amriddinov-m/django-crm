@@ -34,13 +34,17 @@
                         <input name="worker_name" type="text" class="form-control" placeholder="Имя работника" required>
                     </th>
                     <td>
-                        <input name="phone" type="number" class="form-control" placeholder="Телефон">
+                        <input name="phone" type="text" class="form-control" placeholder="Телефон">
                     </td>
                     <td>
                         <input name="car_numb" type="text" class="form-control" placeholder="Номер машиины" required>
                     </td>
                     <td>
-                        <input name="status" type="number" class="form-control" placeholder="Статус">
+                        <select class="form-control bg-white"
+                                autocomplete="off" name="status">
+                            <option value="0">Активный</option>
+                            <option value="1">Не активный</option>
+                        </select>
                     </td>
 
                     <td>

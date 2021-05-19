@@ -47,6 +47,7 @@
                                     <h6>{% if search_value %} Поиск по запросу: {{ search_value }}{% endif %}</h6>
                                     <input class="form-control mt-3"
                                            type="text"
+                                           autocomplete="off"
                                            name="name_or_phone_client"
                                            placeholder="Поиск клиентов">
                                 </div>
@@ -141,6 +142,10 @@
                                     </svg>
                                 </a>
                             </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="8"><h4>Не найдено клиентов</h4></td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -321,7 +326,7 @@
     <script src="{% static 'vendor/select2/js/select2.full.min.js' %}"></script>
     <script>
         $(document).ready(function () {
-            $('.select2-container--default').addClass('form-control');
+            $('.select2-container--default').removeAttr('style').addClass('form-control');
             $('.select2-selection--single').attr('style', 'border: 0');
         });
         $('#region_select2_id').select2({
