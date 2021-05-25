@@ -4,6 +4,7 @@ from requests.auth import HTTPBasicAuth
 
 from client.models import Client, Region, ClientType, Sms
 from order.models import WashOrder, Setting
+from payment.models import ProjectSetting
 
 
 def create_client(post_request, user_request):
@@ -69,7 +70,8 @@ def create_wash_order_from_client_list(post_request, user_request):
     client_id = post_request.get('client_id', None)
     wash_order = WashOrder.objects.create(client_id=client_id,
                                           user_id=user_request.id,
-                                          status='during')
+                                          status='during',
+                                          price=ProjectSetting.load().rate)
 
     return dict(
         {'back_url': reverse(post_request.get('back_url', 'wash-order-detail'), kwargs={'pk': wash_order.pk}),

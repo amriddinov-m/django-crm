@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from client.choices import STATUS_CLIENT_CHOICES
+
 
 class Region(models.Model):
     name = models.CharField(max_length=255,
@@ -48,8 +50,10 @@ class Client(models.Model):
                                     on_delete=models.SET_NULL,
                                     null=True, blank=True,
                                     verbose_name='Тип клиента')
-    status = models.IntegerField(default=0,
-                                 verbose_name='Статус')
+    status = models.CharField(max_length=255,
+                              verbose_name='Статус',
+                              default='active',
+                              choices=STATUS_CLIENT_CHOICES)
 
     def __str__(self):
         return self.full_name

@@ -85,8 +85,8 @@ class WashOrderDetailView(TemplateView):
         context['setting'] = Setting.objects.first()
         wash_order_items = WashOrderItem.objects.filter(wash_order_id=kwargs['pk'])
         context['wash_order_items'] = wash_order_items.order_by('-id')
-        context['total_area'] = wash_order_items.aggregate(total_area=Sum('area'))
-        context['total_summa'] = wash_order_items.aggregate(total_summa=Sum('summa'))
+        context['total'] = wash_order_items.aggregate(total_area=Sum('area'),
+                                                      total_summa=Sum('summa'))
         context['payments'] = PaymentLog.objects.filter(outlay=kwargs['pk'], outcat=1)
         return context
 
@@ -94,7 +94,7 @@ class WashOrderDetailView(TemplateView):
 class WashOrderUpdateView(UpdateView):
     template_name = 'wash-order-update.html'
     model = WashOrder
-    fields = ['team', 'client', 'user', 'status', 'end_time']
+    fields = ['team', 'client', 'status', 'end_time']
 
     def get_success_url(self):
         back_url = self.request.GET.get('back_url', 'wash-order-list')

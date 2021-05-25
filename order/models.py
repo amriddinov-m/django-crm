@@ -59,8 +59,12 @@ class WashOrder(models.Model):
                              verbose_name='Пользователь')
     status = models.CharField(max_length=255,
                               choices=WASH_ORDER_STATUS_CHOICES,
-                               null=True, blank=True,
-                               verbose_name='Статус')
+                              null=True, blank=True,
+                              verbose_name='Статус')
+    price = models.FloatField(default=0,
+                              verbose_name='Цена')
+    total = models.IntegerField(verbose_name='Общая сумма',
+                                default=0)
 
     def __str__(self):
         return '{} | {}'.format(self.client, self.created_at)

@@ -128,6 +128,12 @@
                                                     <th>Дата окончания</th>
                                                     <td>{{ wash_order.end_time|default:'-' }}</td>
                                                 </tr>
+                                                <tr>
+                                                    <th>Цена</th>
+                                                    <td>{{ wash_order.price }}</td>
+                                                    <th>Общая сумма</th>
+                                                    <td>{{ wash_order.total|intcomma }}</td>
+                                                </tr>
                                                 </tbody>
                                             </table>
                                         </tr>
@@ -218,34 +224,34 @@
                                         class="td_summa_list">{{ item.summa|intcomma }}</td>
                                     <td>
                                         {% if item.wash_order.status != 'accepted' %}
-                                        <button class="btn btn-outline-danger btn-sm mr-2"
-                                                onclick="removeWashOrderItemModalShow({{ item.id }}, '{{ item.area }}')"
-                                                data-target="#removeWashOrderItemModal">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                 fill="currentColor"
-                                                 class="bi bi-trash" viewBox="0 0 16 16">
-                                                <path
-                                                        d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                                                <path fill-rule="evenodd"
-                                                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                                            </svg>
-                                        </button>
-                                        <button type="button"
-                                                onclick="updateWashOrderItem({{ item.id }},
-                                                        $('#id_td_x_size_{{ item.pk }}').text(),
-                                                        $('#id_td_y_size_{{ item.pk }}').text(),
-                                                        $('#id_td_area_{{ item.pk }}').text(),
-                                                        $('#id_td_summa_{{ item.pk }}').text())"
-                                                class="btn btn-outline-dark btn-sm mr-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                 fill="currentColor"
-                                                 style="margin-bottom: 2px"
-                                                 class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
-                                            </svg>
-                                        </button>
-                                    </td>
-                                {% endif %}
+                                            <button class="btn btn-outline-danger btn-sm mr-2"
+                                                    onclick="removeWashOrderItemModalShow({{ item.id }}, '{{ item.area }}')"
+                                                    data-target="#removeWashOrderItemModal">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                     fill="currentColor"
+                                                     class="bi bi-trash" viewBox="0 0 16 16">
+                                                    <path
+                                                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                    <path fill-rule="evenodd"
+                                                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                </svg>
+                                            </button>
+                                            <button type="button"
+                                                    onclick="updateWashOrderItem({{ item.id }},
+                                                            $('#id_td_x_size_{{ item.pk }}').text(),
+                                                            $('#id_td_y_size_{{ item.pk }}').text(),
+                                                            $('#id_td_area_{{ item.pk }}').text(),
+                                                            $('#id_td_summa_{{ item.pk }}').text())"
+                                                    class="btn btn-outline-dark btn-sm mr-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                     fill="currentColor"
+                                                     style="margin-bottom: 2px"
+                                                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
+                                                    <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/>
+                                                </svg>
+                                            </button>
+                                            </td>
+                                        {% endif %}
                                 </tr>
                             {% endfor %}
                             <tr class="table-dark">
@@ -253,10 +259,10 @@
                                     <h4 class="text-dark">Общий итог</h4>
                                 </td>
                                 <td>
-                                    <h6 class="text-black-50">{{ total_area.total_area|default:0 }}</h6>
+                                    <h6 class="text-black-50">{{ total.total_area|default:0 }}</h6>
                                 </td>
                                 <td>
-                                    <h6 class="text-black-50">{{ total_summa.total_summa|default:0|intcomma }}</h6>
+                                    <h6 class="text-black-50">{{ total.total_summa|default:0|intcomma }}</h6>
                                 </td>
                                 <td></td>
                             </tr>
@@ -329,7 +335,11 @@
                     </table>
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-info float-right mt-2" onclick="printTable()">Печатать</button>
+                </div>
+            </div>
         </div>
     </div>
     <!-- Modal Client -->
@@ -419,6 +429,94 @@
             }
 
         });
+
+        function printTable() {
+            let originalContents = document.body.innerHTML;
+
+            let template = `<table style="width:100%;">
+            <tr>
+                <td style="width: 200px;padding: 5px;">
+
+                </td>
+                <td style="padding: 5px;">
+                    <p>
+                        <strong>ALLADIN CARPET</strong><br/>
+                        Телефон: +998 99 333 2222 Телеграм: +998 99 222 1111
+                    </p>
+                </td>
+            </tr>
+        </table>
+
+        <h3 style="text-align: center;">НАКЛАДНАЯ № {{ wash_order.pk }} от {{ wash_order.created_at }}</h3>
+        <hr/>
+
+        <table style="width: 100%;text-align: center;" border="1">
+            <tr style="background-color: grey;font-weight: bold;">
+                <td style="padding: 5px;">№</td>
+                <td style="padding: 5px;">Ширина</td>
+                <td style="padding: 5px;">Высота</td>
+                <td style="padding: 5px;">Квардрат</td>
+                <td style="padding: 5px;">Цена</td>
+                <td style="padding: 5px;">Сумма</td>
+            </tr>
+            {% for item in wash_order_items %}
+            <tr>
+                <td style="padding: 5px;">{{ forloop.counter }}</td>
+                <td style="padding: 5px;">{{ item.x_size }} м</td>
+                <td style="padding: 5px;">{{ item.y_size }} м</td>
+                <td style="padding: 5px;">{{ item.area }} кв</td>
+                <td style="padding: 5px;">{{ item.price }}</td>
+                <td style="padding: 5px;">{{ item.summa }}</td>
+            </tr>
+            {% endfor %}
+
+            <tr style="font-weight: bold;">
+                <td style="padding: 5px;"></td>
+                <td style="padding: 5px;"></td>
+                <td style="padding: 5px;">Общая ква-ра</td>
+                <td style="padding: 5px;">{{ total.total_area }} кв</td>
+                <td style="padding: 5px;">Общая сумма</td>
+                <td style="padding: 5px;">{{ total.total_summa|intcomma }}</td>
+            </tr>
+
+        </table>
+        <p>Сумма с прописью: <strong>{{ total.total_summa|intcomma }}</strong> <i>( девяносто тысяч сум ноль тийинов )</i> </p>
+        <table style="width: 100%;margin-top:10px;text-align: center;" border="1">
+            <tr style="background-color: grey;font-weight: bold;">
+                <td style="padding: 5px;"> Сдал: </td>
+                <td style="padding: 5px;"> Принял (клиент): </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>
+                        Бригада №{{ wash_order.team_id }} {{ wash_order.team.worker_name }}<br/>
+                        {{ wash_order.team.phone }}
+                    </p>
+                </td>
+                <td>
+                    <p>
+                        {{ wash_order.client }}<br/>
+                        {{ wash_order.client.phone|default:wash_order.client.phone_extra }}
+                    </p>
+                </td>
+            </tr>
+
+            <tr style="text-align: center;margin-top:8px;">
+                <td style="padding:7px;"> подпись ____________________________   </td>
+                <td style="padding:7px;"> подпись ____________________________  </td>
+            </tr>
+        </table>`;
+
+            template += template;
+
+            document.body.innerHTML = template;
+
+            window.print();
+
+            document.body.innerHTML = originalContents;
+            location.reload()
+
+        }
 
         {#function check_input_value(data, action) {#}
         {#    if ($('#id_x_size').val() !== '' && $('#id_y_size').val() !== '') {#}

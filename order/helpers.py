@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.template import loader, Context
@@ -6,6 +8,7 @@ from django.urls import reverse
 from client.helpers import send_sms
 from order.models import Team, WashOrder, WashOrderItem
 from payment.helpers import payment_income
+from payment.models import ProjectSetting
 
 
 def create_team(post_request, user_request):
@@ -36,11 +39,13 @@ def create_wash_order(post_request, user_request):
     client_id = post_request.get('client', None)
     status = post_request.get('status', None)
     end_time = post_request.get('end_time', None)
+    setting_course = ProjectSetting.objects.get(pk=1)
     WashOrder.objects.create(team_id=int(team_id),
                              client_id=int(client_id),
                              status=status,
                              user=user_request,
-                             end_time=end_time)
+                             end_time=end_time,
+                             price=setting_course.rate)
     return dict(
         {'back_url': reverse(post_request.get('back_url', 'wash-order-list')),
          'data': ''})
@@ -55,6 +60,10 @@ def delete_wash_order(post_request, user_request):
          'data': ''})
 
 
+def update_wash_order_total(pk, total):
+    WashOrder.objects.filter(pk=pk).update(total=total)
+
+
 def create_wash_order_item(post_request, user_request):
     x_size = post_request.get('x_size', None)
     y_size = post_request.get('y_size', None)
@@ -66,6 +75,9 @@ def create_wash_order_item(post_request, user_request):
                                  y_size=y_size,
                                  area=area,
                                  summa=summa)
+    wash_order_item_total_summa = WashOrderItem.objects.filter(wash_order_id=wash_order_id) \
+        .aggregate(total_summa=Sum('summa'))
+    update_wash_order_total(wash_order_id, wash_order_item_total_summa.get('total_summa', 0))
     return dict(
         {'back_url': reverse(post_request.get('back_url', 'wash-order-detail'), kwargs={'pk': wash_order_id}),
          'data': ''})
@@ -76,6 +88,9 @@ def delete_wash_order_item(post_request, user_request):
     wash_order_id = post_request.get('wash_order_id', None)
     wash_order_item = WashOrderItem.objects.get(id=int(wash_order_item_id))
     wash_order_item.delete()
+    wash_order_item_total_summa = WashOrderItem.objects.filter(wash_order_id=wash_order_id) \
+        .aggregate(total_summa=Sum('summa'))
+    update_wash_order_total(wash_order_id, wash_order_item_total_summa.get('total_summa', 0))
     return dict(
         {'back_url': reverse(post_request.get('back_url', 'wash-order-detail'), kwargs={'pk': wash_order_id}),
          'data': ''})
@@ -99,6 +114,9 @@ def update_wash_order_item(post_request, user_request):
                                                                y_size=float(y_size),
                                                                area=float(area),
                                                                summa=int(summa))
+    wash_order_item_total_summa = WashOrderItem.objects.filter(wash_order_id=wash_order_pk) \
+        .aggregate(total_summa=Sum('summa'))
+    update_wash_order_total(wash_order_pk, wash_order_item_total_summa.get('total_summa', 0))
     return dict(
         {'back_url': reverse(post_request.get('back_url', 'wash-order-detail'), kwargs={'pk': wash_order_pk}),
          'data': ''})
@@ -113,7 +131,8 @@ def update_team_and_status(post_request, user_request):
     if status_value == 'accepted':
         send_sms(wash_order.client.phone, 'Ваш заказ принят, итоговая сумма {}'.format(wash_order_items['total_summa']))
     WashOrder.objects.filter(pk=pk).update(team_id=team_value if team_value != '' else wash_order.team_id,
-                                           status=status_value)
+                                           status=status_value,
+                                           end_time=datetime.now().date() if status_value == 'completed' else None)
     return dict(
         {'back_url': reverse(post_request.get('back_url', 'wash-order-detail'), kwargs={'pk': pk}),
          'data': ''})
