@@ -38,11 +38,13 @@
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <ul>
+                        {% if request.user.is_superuser %}
                             <form action="{% url 'wash-order-update' wash_order.pk %}" method="get">
                                 <input type="hidden" value="wash-order-detail" name="back_url">
                                 <input type="hidden" value="{{ wash_order.pk }}" name="pk">
                                 <button type="submit" class="dropdown-item" href="">Редактировать</button>
                             </form>
+                        {% endif %}
                             {% if wash_order.status == 'during' %}
                                 <li>
                                     <form class="text-center"
@@ -500,7 +502,7 @@
                 })
         }
 
-        function printTable(data) {
+        async function printTable(data) {
             if (data) {
                 accepted_status_wash_order(data)
             }
@@ -509,7 +511,7 @@
             let template = `<table style="width:100%;">
             <tr>
                 <td style="width: 200px;padding: 5px;">
-
+                <div style="background-image: url('{% static 'img/logo.png' %}'); width:200px; height:100px;"></div>
                 </td>
                 <td style="padding: 5px;">
                     <p>
@@ -584,10 +586,10 @@
 
             document.body.innerHTML = template;
 
-            window.print();
+            await window.print();
 
             document.body.innerHTML = originalContents;
-            location.reload()
+            await location.reload()
 
 
         }
