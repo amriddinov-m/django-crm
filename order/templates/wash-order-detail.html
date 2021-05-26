@@ -37,11 +37,66 @@
                         </svg>
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <form action="{% url 'wash-order-update' wash_order.pk %}" method="get">
-                            <input type="hidden" value="wash-order-detail" name="back_url">
-                            <input type="hidden" value="{{ wash_order.pk }}" name="pk">
-                            <button type="submit" class="dropdown-item" href="">Редактировать</button>
-                        </form>
+                        <ul>
+                            <form action="{% url 'wash-order-update' wash_order.pk %}" method="get">
+                                <input type="hidden" value="wash-order-detail" name="back_url">
+                                <input type="hidden" value="{{ wash_order.pk }}" name="pk">
+                                <button type="submit" class="dropdown-item" href="">Редактировать</button>
+                            </form>
+                            {% if wash_order.status == 'during' %}
+                                <li>
+                                    <form class="text-center"
+                                          action="{% url 'order_action' %}"
+                                          method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="wash_order_pk" value="{{ wash_order.pk }}">
+                                        <input type="hidden" name="action" value="update_status_wash_order">
+                                        <input type="hidden" name="back_url" value="wash-order-detail">
+                                        <input type="hidden" name="status_value" value="accepted">
+                                        <button type="submit" class="btn btn-transparent px-2">
+                                            Принято
+                                        </button>
+                                    </form>
+                                </li>
+                            {% endif %}
+                            {% if wash_order.status == 'accepted' %}
+                                <li>
+                                    <form class="text-center"
+                                          action="{% url 'order_action' %}"
+                                          method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="wash_order_pk" value="{{ wash_order.pk }}">
+                                        <input type="hidden" name="action" value="update_status_wash_order">
+                                        <input type="hidden" name="back_url" value="wash-order-detail">
+                                        <input type="hidden" name="status_value" value="submitted">
+                                        <button type="button" class="btn btn-transparent px-2" onclick="printTable({
+                                                'action': 'update_status_wash_order',
+                                                'back_url': 'wash-order-detail',
+                                                'wash_order_pk': {{ wash_order.pk }},
+                                                'status_value': 'submitted'
+                                                })">
+                                            Отправлен
+                                        </button>
+                                    </form>
+                                </li>
+                            {% endif %}
+                            {% if wash_order.status == 'submitted' %}
+                                <li>
+                                    <form class="text-center"
+                                          action="{% url 'order_action' %}"
+                                          method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="wash_order_pk" value="{{ wash_order.pk }}">
+                                        <input type="hidden" name="action" value="update_status_wash_order">
+                                        <input type="hidden" name="back_url" value="wash-order-detail">
+                                        <input type="hidden" name="status_value" value="completed">
+                                        <button type="submit" class="btn btn-transparent px-2">
+                                            Завершен
+                                        </button>
+                                    </form>
+                                </li>
+                            {% endif %}
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -87,38 +142,34 @@
                                                         <th>Статус</th>
                                                         <td>
                                                         <span>
-                                                            <a onclick="status_update_show()"
-                                                               data-toggle="tooltip"
-                                                               data-placement="top"
-                                                               title="Изменить"
-                                                               class="text-decoration-none text-info"
+                                                            <a class="text-decoration-none {% if wash_order.status == 'during' %}text-success  {% elif wash_order.status == 'accepted' %}text-warning {% elif wash_order.status == 'submitted' %} text-info {% elif wash_order.status == 'completed' %} text-danger{% endif %}"
                                                                style="cursor: pointer"
                                                                id="id_status_text">{{ wash_order.get_status_display }}</a>
                                                         </span>
-                                                            <select class="form-control bg-white d-none update_team_or_status"
-                                                                    autocomplete="off" name="status_value"
-                                                                    id="id_select_status">
-                                                                {#                                                                {% for status in statuses %}#}
-                                                                {#                                                                    {% if not status == wash_order.status %}#}
-                                                                <option value="during"
-                                                                        {% if wash_order.status == 'during' %}selected{% endif %}>
-                                                                    В процессе
-                                                                </option>
-                                                                <option value="accepted"
-                                                                        {% if wash_order.status == 'accepted' %}selected{% endif %}>
-                                                                    Принято
-                                                                </option>
-                                                                <option value="submitted"
-                                                                        {% if wash_order.status == 'submitted' %}selected{% endif %}>
-                                                                    Отправлен
-                                                                </option>
-                                                                <option value="completed"
-                                                                        {% if wash_order.status == 'completed' %}selected{% endif %}>
-                                                                    Завершен
-                                                                </option>
-                                                                {#                                                                    {% endif %}#}
-                                                                {#                                                                {% endfor %}#}
-                                                            </select>
+                                                            {#                                                            <select class="form-control bg-white d-none update_team_or_status"#}
+                                                            {#                                                                    autocomplete="off" name="status_value"#}
+                                                            {#                                                                    id="id_select_status">#}
+                                                            {#                                                                {% for status in statuses %}#}
+                                                            {#                                                                    {% if not status == wash_order.status %}#}
+                                                            {#                                                                <option value="during"#}
+                                                            {#                                                                        {% if wash_order.status == 'during' %}selected{% endif %}>#}
+                                                            {#                                                                    В процессе#}
+                                                            {#                                                                </option>#}
+                                                            {#                                                                <option value="accepted"#}
+                                                            {#                                                                        {% if wash_order.status == 'accepted' %}selected{% endif %}>#}
+                                                            {#                                                                    Принято#}
+                                                            {#                                                                </option>#}
+                                                            {#                                                                <option value="submitted"#}
+                                                            {#                                                                        {% if wash_order.status == 'submitted' %}selected{% endif %}>#}
+                                                            {#                                                                    Отправлен#}
+                                                            {#                                                                </option>#}
+                                                            {#                                                                <option value="completed"#}
+                                                            {#                                                                        {% if wash_order.status == 'completed' %}selected{% endif %}>#}
+                                                            {#                                                                    Завершен#}
+                                                            {#                                                                </option>#}
+                                                            {#                                                                    {% endif %}#}
+                                                            {#                                                                {% endfor %}#}
+                                                            {#                                                            </select>#}
                                                         </td>
                                                     </form>
                                                 </tr>
@@ -185,7 +236,8 @@
                                     <div class="col-md-2">
                                         <button type="submit"
                                                 id="id_button_add_or_update"
-                                                class="btn btn-outline-secondary btn-block p-1 text-center">
+                                                class="btn btn-outline-secondary btn-block p-1 text-center"
+                                                {% if wash_order.status == 'completed' %}disabled{% endif %}>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                                  fill="currentColor"
                                                  class="bi bi-plus" viewBox="0 0 16 16">
@@ -223,7 +275,7 @@
                                     <td id="id_td_summa_{{ item.pk }}"
                                         class="td_summa_list">{{ item.summa|intcomma }}</td>
                                     <td>
-                                        {% if item.wash_order.status != 'accepted' %}
+                                        {% if item.wash_order.status != 'accepted' and item.wash_order.status != 'completed' %}
                                             <button class="btn btn-outline-danger btn-sm mr-2"
                                                     onclick="removeWashOrderItemModalShow({{ item.id }}, '{{ item.area }}')"
                                                     data-target="#removeWashOrderItemModal">
@@ -430,7 +482,28 @@
 
         });
 
-        function printTable() {
+        async function accepted_status_wash_order(data, url = '{% url 'order_action' %}') {
+            let form_data = new FormData();
+            for (var key in data) {
+                form_data.append(key, data[key]);
+            }
+            const response = await fetch(url, {
+                method: "post",
+                cache: 'no-cache',
+                body: form_data
+            })
+                .then(response => {
+                    console.log(data);
+                })
+                .catch(response => {
+                    alert('Error')
+                })
+        }
+
+        function printTable(data) {
+            if (data) {
+                accepted_status_wash_order(data)
+            }
             let originalContents = document.body.innerHTML;
 
             let template = `<table style="width:100%;">
@@ -465,8 +538,8 @@
                 <td style="padding: 5px;">{{ item.x_size }} м</td>
                 <td style="padding: 5px;">{{ item.y_size }} м</td>
                 <td style="padding: 5px;">{{ item.area }} кв</td>
-                <td style="padding: 5px;">{{ item.price }}</td>
-                <td style="padding: 5px;">{{ item.summa }}</td>
+                <td style="padding: 5px;">{{ item.wash_order.price|intcomma|remove_zero }}</td>
+                <td style="padding: 5px;">{{ item.summa|intcomma }}</td>
             </tr>
             {% endfor %}
 
@@ -516,7 +589,9 @@
             document.body.innerHTML = originalContents;
             location.reload()
 
+
         }
+
 
         {#function check_input_value(data, action) {#}
         {#    if ($('#id_x_size').val() !== '' && $('#id_y_size').val() !== '') {#}
@@ -621,26 +696,5 @@
         {#        })#}
         {# }#}
         {##}
-        {#async function delete_wash_order_item(data, url = '{% url 'order_action' %}') {#}
-        {#    let form_data = new FormData();#}
-        {#    for (var key in data) {#}
-        {#        form_data.append(key, data[key]);#}
-        {#    }#}
-        {#    const response = await fetch(url, {#}
-        {#        method: "post",#}
-        {#        cache: 'no-cache',#}
-        {#        body: form_data#}
-        {#    })#}
-        {#        .then(response => {#}
-        {#            console.log(data);#}
-        {#            $(`#id_tr_wash_order_item_${data['wash_order_item_id']}`).remove()#}
-        {#        })#}
-        {#        .catch(response => {#}
-        {#            alert('Error')#}
-        {#        })#}
-        {#        .finally(function () {#}
-        {#            $(`#removeWashOrderItemModal`).modal('toggle')#}
-        {#        })#}
-        {# }#}
     </script>
 {% endblock extra_js %}

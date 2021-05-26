@@ -9,7 +9,7 @@ from django.views.generic.base import View
 
 from client.models import Client
 from order.helpers import create_team, delete_team, create_wash_order, delete_wash_order, create_wash_order_item, \
-    delete_wash_order_item, update_wash_order_item, update_team_and_status, order_payment
+    delete_wash_order_item, update_wash_order_item, update_team_and_status, order_payment, update_status_wash_order
 from order.models import Team, WashOrder, WashOrderItem, Setting
 from payment.models import PaymentLog
 
@@ -124,11 +124,12 @@ class OrderActionView(View):
             'delete_wash_order_item': delete_wash_order_item,
             'update_wash_order_item': update_wash_order_item,
             'update_team_and_status': update_team_and_status,
+            'update_status_wash_order': update_status_wash_order,
             'order_payment': order_payment
         }
         response = actions[action](post_request, user_request)
         back_url = response['back_url']
-        if action == '':
+        if action == 'update_status_wash_order' and response['status'] == 'submitted':
             return JsonResponse(response, safe=False)
         else:
             return redirect(back_url)

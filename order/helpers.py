@@ -125,17 +125,25 @@ def update_wash_order_item(post_request, user_request):
 def update_team_and_status(post_request, user_request):
     pk = post_request.get('wash_order_pk', None)
     wash_order = WashOrder.objects.get(pk=pk)
-    wash_order_items = WashOrderItem.objects.filter(wash_order_id=wash_order.pk).aggregate(total_summa=Sum('summa'))
     team_value = post_request.get('team_value', None)
-    status_value = post_request.get('status_value', None)
-    if status_value == 'accepted':
-        send_sms(wash_order.client.phone, 'Ваш заказ принят, итоговая сумма {}'.format(wash_order_items['total_summa']))
-    WashOrder.objects.filter(pk=pk).update(team_id=team_value if team_value != '' else wash_order.team_id,
-                                           status=status_value,
-                                           end_time=datetime.now().date() if status_value == 'completed' else None)
+    WashOrder.objects.filter(pk=pk).update(team_id=team_value if team_value != '' else wash_order.team_id)
     return dict(
         {'back_url': reverse(post_request.get('back_url', 'wash-order-detail'), kwargs={'pk': pk}),
          'data': ''})
+
+
+def update_status_wash_order(post_request, user_request):
+    pk = post_request.get('wash_order_pk', None)
+    wash_order = WashOrder.objects.get(pk=pk)
+    status_value = post_request.get('status_value', None)
+    wash_order_items = WashOrderItem.objects.filter(wash_order_id=wash_order.pk).aggregate(total_summa=Sum('summa'))
+    if status_value == 'accepted':
+        send_sms(wash_order.client.phone, 'Ваш заказ принят, итоговая сумма {}'.format(wash_order_items['total_summa']))
+    WashOrder.objects.filter(pk=pk).update(status=status_value,
+                                           end_time=datetime.now().date() if status_value == 'completed' else None)
+    return dict(
+        {'back_url': reverse(post_request.get('back_url', 'wash-order-detail'), kwargs={'pk': pk}),
+         'status': status_value})
 
 
 def order_payment(post_request, user_request):

@@ -64,6 +64,7 @@
                 <th scope="col">№</th>
                 <th scope="col">Команда</th>
                 <th scope="col">Клиент</th>
+                <th scope="col">Номер</th>
                 <th scope="col">Статус</th>
                 <th scope="col">Дата старта</th>
                 <th scope="col">Дата окончания</th>
@@ -78,6 +79,7 @@
                     <td><a class="text-info text-decoration-none"
                            href="{% url 'client-detail' wash_order.client.pk %}">{{ wash_order.client.full_name }}</a>
                     </td>
+                <td>{{ wash_order.client.phone }}</td>
                     <td class="{% if wash_order.status == 'during' %}text-success  {% elif wash_order.status == 'accepted' %}text-warning {% elif wash_order.status == 'submitted' %} text-info {% elif wash_order.status == 'completed' %} text-danger{% endif %}">{{ wash_order.get_status_display }}</td>
                     <td>{{ wash_order.start_time|default:'-' }}</td>
                     <td>{{ wash_order.end_time|default:'-' }}</td>
