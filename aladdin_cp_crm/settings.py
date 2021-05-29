@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'frontend',
     'outlay',
     'payment',
+    'worker',
 ]
 
 INTERNAL_IPS = [

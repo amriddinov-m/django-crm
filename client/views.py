@@ -26,15 +26,15 @@ class ClientListView(TemplateView):
         clients = Client.objects.select_related('region', 'client_type')
         if search_client:
             context['clients'] = clients.filter(
-                Q(full_name__icontains=search_client) | Q(phone__icontains=search_client))
+                Q(full_name__icontains=search_client) | Q(phone__icontains=search_client)).order_by('-created_at')
             context['search_value'] = search_client
         elif client_type_id:
-            sort_clients = clients.filter(client_type_id=client_type_id)
+            sort_clients = clients.filter(client_type_id=client_type_id).order_by('-created_at')
             client_type = ClientType.objects.get(id=client_type_id)
             context['clients'] = sort_clients
             context['search_value'] = client_type.name
         else:
-            context['clients'] = clients.all()
+            context['clients'] = clients.all().order_by('-created_at')
         return context
 
     def post(self, request):

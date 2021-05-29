@@ -21,7 +21,7 @@
             <div class="row page-titles mx-0 py-4">
                 <div class="col-md-6">
                     <div class="welcome-text">
-                        <h4 class="text-dark m-0">Заказ: {{ wash_order.client }}</h4>
+                        <h4 class="text-dark m-0">Заказ: {{ wash_order.client }} | №{{ wash_order.pk }}</h4>
                     </div>
                 </div>
                 <div class="dropdown col-md-6">
@@ -38,13 +38,13 @@
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <ul>
-                        {% if request.user.is_superuser %}
-                            <form action="{% url 'wash-order-update' wash_order.pk %}" method="get">
-                                <input type="hidden" value="wash-order-detail" name="back_url">
-                                <input type="hidden" value="{{ wash_order.pk }}" name="pk">
-                                <button type="submit" class="dropdown-item" href="">Редактировать</button>
-                            </form>
-                        {% endif %}
+                            {% if request.user.is_superuser and wash_order.status != 'completed' %}
+                                <form action="{% url 'wash-order-update' wash_order.pk %}" method="get">
+                                    <input type="hidden" value="wash-order-detail" name="back_url">
+                                    <input type="hidden" value="{{ wash_order.pk }}" name="pk">
+                                    <button type="submit" class="dropdown-item" href="">Редактировать</button>
+                                </form>
+                            {% endif %}
                             {% if wash_order.status == 'during' %}
                                 <li>
                                     <form class="text-center"
@@ -205,6 +205,7 @@
                 </div>
                 <div class="col-md-12">
                     <div class="container">
+                        {% if request.user.is_superuser or wash_order.status == 'during' or wash_order.status == 'accepted' %}
                         <div class="row bg-light mt-1 p-3">
                             <div class="col-md-12">
                                 <form action="{% url 'order_action' %}" method="post" class="row">
@@ -238,8 +239,7 @@
                                     <div class="col-md-2">
                                         <button type="submit"
                                                 id="id_button_add_or_update"
-                                                class="btn btn-outline-secondary btn-block p-1 text-center"
-                                                {% if wash_order.status == 'completed' %}disabled{% endif %}>
+                                                class="btn btn-outline-secondary btn-block p-1 text-center">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                                  fill="currentColor"
                                                  class="bi bi-plus" viewBox="0 0 16 16">
@@ -251,22 +251,25 @@
                                 </form>
                             </div>
                         </div>
+                        {% endif %}
                     </div>
                     <!-- client-add end -->
 
                     <!-- table-start -->
                     <div class="container">
                         <table class="table table-bordered text-center">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th scope="col">№</th>
-                                <th scope="col">x_size</th>
-                                <th scope="col">y_size</th>
-                                <th scope="col">Площадь</th>
-                                <th scope="col">Сумма</th>
-                                <th scope="col">Возможности</th>
-                            </tr>
-                            </thead>
+                            {% if request.user.is_superuser %}
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">№</th>
+                                    <th scope="col">x_size</th>
+                                    <th scope="col">y_size</th>
+                                    <th scope="col">Площадь</th>
+                                    <th scope="col">Сумма</th>
+                                    <th scope="col">Возможности</th>
+                                </tr>
+                                </thead>
+                            {% endif %}
                             <tbody id="id_wash_order_item_list" class="bg-light table_tr_list">
                             {% for item in wash_order_items %}
                                 <tr id="id_tr_wash_order_item_{{ item.pk }}">
@@ -277,7 +280,7 @@
                                     <td id="id_td_summa_{{ item.pk }}"
                                         class="td_summa_list">{{ item.summa|intcomma }}</td>
                                     <td>
-                                        {% if item.wash_order.status != 'accepted' and item.wash_order.status != 'completed' %}
+                                        {% if request.user.is_superuser or wash_order.status == 'during' or wash_order.status == 'accepted' %}
                                             <button class="btn btn-outline-danger btn-sm mr-2"
                                                     onclick="removeWashOrderItemModalShow({{ item.id }}, '{{ item.area }}')"
                                                     data-target="#removeWashOrderItemModal">
@@ -359,7 +362,8 @@
                                    type="text" name="comment">
                         </div>
                     </form>
-                    <button class="btn btn-sm btn-dark m-3 float-right" type="submit" form="payment_add">
+                    <button class="btn btn-sm btn-dark m-3 float-right" type="submit"
+                            {% if wash_order.status == 'completed' and not request.user.is_superuser %}disabled{% endif %} form="payment_add">
                         Добавить
                     </button>
                 </div>
@@ -391,7 +395,8 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <button type="button" class="btn btn-info float-right mt-2" onclick="printTable()">Печатать</button>
+                    <button type="button" class="btn btn-info float-right mt-2" onclick="printTable()">Печатать
+                    </button>
                 </div>
             </div>
         </div>
@@ -511,7 +516,7 @@
             let template = `<table style="width:100%;">
             <tr>
                 <td style="width: 200px;padding: 5px;">
-                <div style="background-image: url('{% static 'img/logo.png' %}'); width:200px; height:100px;"></div>
+                <div style="background-image: url('{% static 'img/logo.png' %}'); width:200px; height:100px; background-size: contain; background-repeat: no-repeat;background-position: center;"></div>
                 </td>
                 <td style="padding: 5px;">
                     <p>
@@ -571,7 +576,8 @@
                 <td>
                     <p>
                         {{ wash_order.client }}<br/>
-                        {{ wash_order.client.phone|default:wash_order.client.phone_extra }}
+                        {{ wash_order.client.address }} <br/>
+                        {{ wash_order.client.phone }} | {{ wash_order.client.phone_extra|default:'-' }}
                     </p>
                 </td>
             </tr>
@@ -590,8 +596,6 @@
 
             document.body.innerHTML = originalContents;
             await location.reload()
-
-
         }
 
 

@@ -8,6 +8,7 @@ from payment.forms import OutlayPaymentForm
 from payment.helpers import payment_outcome
 from client.models import Car
 from payment.models import PaymentLog
+from worker.models import Worker
 
 
 class OutlayPaymentCreateView(TemplateView):
@@ -26,7 +27,6 @@ class OutlayPaymentCreateView(TemplateView):
         value_outlay_category = self.request.POST.get('outlay_category', '')
         value_outlay_type = self.request.POST.get('outlay_type', '')
         value_outlay_worker = self.request.POST.get('worker', None)
-        value_outlay_car = self.request.POST.get('car', None)
         value_outlay_comment = self.request.POST.get('comment', '')
         value_outlay_amount = self.request.POST.get('payment_amount', '')
         value_outlay_amount_method = self.request.POST.get('payment_method', '')
@@ -34,19 +34,13 @@ class OutlayPaymentCreateView(TemplateView):
         outlay_category = CategoryOutlay.objects.get(pk=value_outlay_category)
         outlay = OutLay.objects.get(pk=value_outlay_type)
         if outlay_category.category_type == 'worker':
-            worker = User.objects.get(pk=value_outlay_worker)
+            worker = Worker.objects.get(pk=value_outlay_worker)
             print(worker)
             payment_outcome(value_outlay_amount, value_outlay_amount_method,
                             value_outlay_comment,
                             self.request.user, True, 2, value_outlay_type,
                             outlay_name=outlay.outlay_category.name, worker=worker,
                             outlay_child=value_outlay_worker)
-        elif outlay_category.category_type == 'car':
-            car = Car.objects.get(pk=value_outlay_car)
-            payment_outcome(value_outlay_amount, value_outlay_amount_method,
-                            value_outlay_comment,
-                            self.request.user, True, 8, value_outlay_type,
-                            outlay_name=outlay.name, car_number=car.car_number, outlay_child=car.id)
         else:
             payment_outcome(value_outlay_amount, value_outlay_amount_method,
                             value_outlay_comment,

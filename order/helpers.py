@@ -138,7 +138,8 @@ def update_status_wash_order(post_request, user_request):
     status_value = post_request.get('status_value', None)
     wash_order_items = WashOrderItem.objects.filter(wash_order_id=wash_order.pk).aggregate(total_summa=Sum('summa'))
     if status_value == 'accepted':
-        send_sms(wash_order.client.phone, 'Ваш заказ принят, итоговая сумма {}'.format(wash_order_items['total_summa']))
+        send_sms(wash_order.client.phone,
+                 'Ваш заказ принят, итоговая сумма {} сум'.format(wash_order_items['total_summa']))
     WashOrder.objects.filter(pk=pk).update(status=status_value,
                                            end_time=datetime.now().date() if status_value == 'completed' else None)
     return dict(
@@ -154,6 +155,8 @@ def order_payment(post_request, user_request):
     value_outlay_amount_method = post_request.get('payment_method', '')
     payment_income(value_outlay_amount, value_outlay_amount_method, value_outlay_comment, user_request,
                    True, 1, wash_order.pk, order_pk=wash_order_pk)
+    send_sms(wash_order.client.phone,
+             'Ваша оплата в сумме {} сум,по заказу №{} было принято'.format(value_outlay_amount, wash_order_pk))
     return dict(
         {'back_url': reverse(post_request.get('back_url', 'wash-order-detail'), kwargs={'pk': wash_order.pk}),
          'data': ''})

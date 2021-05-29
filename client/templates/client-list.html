@@ -181,10 +181,10 @@
                                 </div>
                             </div>
                             <div class="row mt-3 mb-2">
-                                <div class="col-md-5">
-                                    <input name="address" type="text" class="form-control" placeholder="Адрес" required>
+                                <div class="col-md-6">
+                                    <input name="second_phone" type="text" class="form-control" placeholder="Доп номер" required>
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-md-6">
                                     <select class="form-control select2-example bg-white"
                                             autocomplete="off" name="region" id="region_select2_id">
                                         <option value="">Регион</option>
@@ -193,7 +193,10 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="col-md-2">
+                            <div class="col-md-10 mt-3">
+                                    <input name="address" type="text" class="form-control" placeholder="Адрес" required>
+                                </div>
+                                <div class="col-md-2 mt-3">
                                     <button type="submit" class="btn btn-outline-secondary btn-block p-1 text-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                              fill="currentColor"
