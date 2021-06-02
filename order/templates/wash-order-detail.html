@@ -483,7 +483,7 @@
             let total_size_area = parseFloat(x_size_value) * parseFloat(y_size_value)
             $(`#id_area`).val(total_size_area)
             if (parseInt($(`#id_area`).val()) !== 0) {
-                let total_sum = parseFloat($(`#id_area`).val()) * parseFloat({{ ps }})
+                let total_sum = parseFloat($(`#id_area`).val()) * parseFloat({{ wash_order.price }})
                 $(`#id_summa`).val(total_sum)
             }
         });
