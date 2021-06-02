@@ -67,7 +67,7 @@
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Общая сумма</th>
-                                                                    <td>{{ wash_order_totals.total_summa|intcomma }}</td>
+                                                                    <td>{{ wash_order_totals.total_summa|default:0|intcomma }}</td>
                                                                 </tr>
                                                                 </tbody>
                                                             </table>
