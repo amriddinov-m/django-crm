@@ -139,7 +139,7 @@ def update_status_wash_order(post_request, user_request):
     wash_order_items = WashOrderItem.objects.filter(wash_order_id=wash_order.pk).aggregate(total_summa=Sum('summa'))
     if status_value == 'accepted':
         send_sms(wash_order.client.phone,
-                 'Ваш заказ принят, итоговая сумма {} сум'.format(wash_order_items['total_summa']))
+                 'Ваш заказ №{} принят, итоговая сумма {} сум'.format(pk, wash_order_items['total_summa']))
     WashOrder.objects.filter(pk=pk).update(status=status_value,
                                            end_time=datetime.now().date() if status_value == 'completed' else None)
     return dict(
