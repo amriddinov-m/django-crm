@@ -206,51 +206,51 @@
                 <div class="col-md-12">
                     <div class="container">
                         {% if request.user.is_superuser or wash_order.status == 'during' or wash_order.status == 'accepted' %}
-                        <div class="row bg-light mt-1 p-3">
-                            <div class="col-md-12">
-                                <form action="{% url 'order_action' %}" method="post" class="row">
-                                    <input id="different_action" type="hidden" name="action"
-                                           value="create_wash_order_item">
-                                    <input type="hidden" name="back_url" value="wash-order-detail">
-                                    <input type="hidden" name="wash_order_pk" value="{{ wash_order.pk }}">
-                                    <input type="hidden" id="wash_order_item_pk" name="wash_order_item_pk" value="">
-                                    {% csrf_token %}
-                                    <div class="pl-1 col-md-3">
-                                        <input id="id_x_size" class="form-control wash_order_item_size" type="text"
-                                               autocomplete="off"
-                                               name="x_size"
-                                               placeholder="x_size" required>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input id="id_y_size" class="form-control wash_order_item_size" type="text"
-                                               autocomplete="off"
-                                               name="y_size"
-                                               placeholder="y_size" required>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input id="id_area" class="form-control" type="text" name="area"
-                                               readonly
-                                               placeholder="Площадь">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input id="id_summa" class="form-control" type="text" name="summa"
-                                               placeholder="Сумма">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="submit"
-                                                id="id_button_add_or_update"
-                                                class="btn btn-outline-secondary btn-block p-1 text-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                 fill="currentColor"
-                                                 class="bi bi-plus" viewBox="0 0 16 16">
-                                                <path
-                                                        d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </form>
+                            <div class="row bg-light mt-1 p-3">
+                                <div class="col-md-12">
+                                    <form id="wash_order_item_form" action="{% url 'order_action' %}" method="post" class="row">
+                                        <input id="different_action" type="hidden" name="action"
+                                               value="create_wash_order_item">
+                                        <input type="hidden" name="back_url" value="wash-order-detail">
+                                        <input type="hidden" name="wash_order_pk" value="{{ wash_order.pk }}">
+                                        <input type="hidden" id="wash_order_item_pk" name="wash_order_item_pk" value="">
+                                        {% csrf_token %}
+                                        <div class="pl-1 col-md-3">
+                                            <input id="id_x_size" class="form-control wash_order_item_size" type="text"
+                                                   autocomplete="off"
+                                                   name="x_size"
+                                                   placeholder="x_size" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input id="id_y_size" class="form-control wash_order_item_size" type="text"
+                                                   autocomplete="off"
+                                                   name="y_size"
+                                                   placeholder="y_size" required>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input id="id_area" class="form-control" type="text" name="area"
+                                                   readonly
+                                                   placeholder="Площадь">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input id="id_summa" class="form-control" type="text" name="summa"
+                                                   placeholder="Сумма">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="submit"
+                                                    id="id_button_add_or_update"
+                                                    class="btn btn-outline-secondary btn-block p-1 text-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                     fill="currentColor"
+                                                     class="bi bi-plus" viewBox="0 0 16 16">
+                                                    <path
+                                                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
                         {% endif %}
                     </div>
                     <!-- client-add end -->
@@ -363,7 +363,8 @@
                         </div>
                     </form>
                     <button class="btn btn-sm btn-dark m-3 float-right" type="submit"
-                            {% if wash_order.status == 'completed' and not request.user.is_superuser %}disabled{% endif %} form="payment_add">
+                            {% if wash_order.status == 'completed' and not request.user.is_superuser %}disabled{% endif %}
+                            form="payment_add">
                         Добавить
                     </button>
                 </div>
@@ -441,6 +442,13 @@
 {% block extra_js %}
     <script src="{% static 'vendor/select2/js/select2.full.min.js' %}"></script>
     <script>
+        $('#payment_add, #wash_order_item_form').on('keyup keypress', function (e) {
+            var keyCode = e.keyCode || e.which;
+            if (keyCode === 13) {
+                e.preventDefault();
+                return false;
+            }
+        });
 
         $(document).ready(function () {
             $('.select2-container--default').addClass('form-control')

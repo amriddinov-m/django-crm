@@ -189,20 +189,17 @@
                 Изменить курс доллара
             </div>
             <div class="modal-body">
-                <form id="change_rate_form" action="{% url 'other_action' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="change_rate">
-                    <label for="id_rate">Новый курс доллара</label>
-                    <input id="id_rate" name="rate" class="form-control" required min="1"
-                           type="number">
-                    <button type="button" onclick="change_rate(
+                <input type="hidden" name="action" value="change_rate">
+                <label for="id_rate">Новый курс доллара</label>
+                <input id="id_rate" name="rate" class="form-control" required min="1"
+                       type="number">
+                <button type="button" onclick="change_rate(
                                                 {
                                                 'action': 'change_rate',
                                                 'rate': $('#id_rate').val()
                                                 })"
-                            class="btn btn-primary mt-4 float-right">Сохранить
-                    </button>
-                </form>
+                        class="btn btn-primary mt-4 float-right">Сохранить
+                </button>
             </div>
 
         </div>
