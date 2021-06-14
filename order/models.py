@@ -51,15 +51,13 @@ class WashOrder(models.Model):
                              null=True, blank=True,
                              verbose_name='Команда')
     client = models.ForeignKey('client.Client',
-                               on_delete=models.SET_NULL,
-                               null=True, blank=True,
+                               on_delete=models.CASCADE,
                                verbose_name='Клиент')
     user = models.ForeignKey(User,
                              on_delete=models.CASCADE,
                              verbose_name='Пользователь')
     status = models.CharField(max_length=255,
                               choices=WASH_ORDER_STATUS_CHOICES,
-                              null=True, blank=True,
                               verbose_name='Статус')
     price = models.FloatField(default=0,
                               verbose_name='Цена')
