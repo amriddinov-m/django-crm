@@ -132,14 +132,18 @@
                                                                value="{{ wash_order.pk }}">
                                                         <th>Команда</th>
                                                         <td>
-                                                            <select class="form-control select2-example bg-white update_team_or_status"
-                                                                    autocomplete="off" name="team_value"
-                                                                    id="team_select2">
-                                                                <option value="">Команды</option>
-                                                                {% for team in teams %}
-                                                                    <option value="{{ team.id }}">{{ team }}</option>
-                                                                {% endfor %}
-                                                            </select>
+                                                            {% if wash_order.status == 'during' %}
+                                                                <select class="form-control select2-example bg-white update_team_or_status"
+                                                                        autocomplete="off" name="team_value"
+                                                                        id="team_select2">
+                                                                    <option value="">Команды</option>
+                                                                    {% for team in teams %}
+                                                                        <option value="{{ team.id }}">{{ team }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            {% else %}
+                                                                {{ wash_order.team }}
+                                                            {% endif %}
                                                         </td>
                                                         <th>Статус</th>
                                                         <td>
@@ -208,7 +212,8 @@
                         {% if request.user.is_superuser or wash_order.status == 'during' or wash_order.status == 'accepted' %}
                             <div class="row bg-light mt-1 p-3">
                                 <div class="col-md-12">
-                                    <form id="wash_order_item_form" action="{% url 'order_action' %}" method="post" class="row">
+                                    <form id="wash_order_item_form" action="{% url 'order_action' %}" method="post"
+                                          class="row">
                                         <input id="different_action" type="hidden" name="action"
                                                value="create_wash_order_item">
                                         <input type="hidden" name="back_url" value="wash-order-detail">

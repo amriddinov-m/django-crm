@@ -74,7 +74,7 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Статус</th>
-                                                    <td>{{ client.status }}</td>
+                                                    <td>{{ client.get_status_display }}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>Создано</th>
@@ -111,7 +111,7 @@
                                                 {% for order in wash_orders %}
                                                 <tr>
                                                     <th>Заказ:</th>
-                                                    <td><a href="{% url 'wash-order-detail' order.pk %}">{{ order.created_at|date:'d-m-Y | H:i' }} - {{ order.status }}</a></td>
+                                                    <td><a href="{% url 'wash-order-detail' order.pk %}">{{ order.created_at|date:'d-m-Y | H:i' }} - {{ order.get_status_display }}</a></td>
                                                 </tr>
                                                 {% endfor %}
                                                 </tbody>
