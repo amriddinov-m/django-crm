@@ -74,7 +74,7 @@
             <tbody class="bg-light">
             {% for wash_order in wash_orders %}
                 <tr>
-                    <th scope="row">{{ wash_order.pk }}</th>
+                    <th scope="row">{{ wash_order.numbering }}</th>
                     <td>{{ wash_order.team.worker_name|default:'-' }}</td>
                     <td><a class="text-info text-decoration-none"
                            href="{% url 'client-detail' wash_order.client.pk %}">{{ wash_order.client.full_name }}</a>

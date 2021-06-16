@@ -1,4 +1,5 @@
 import requests
+from django.db.models import Max
 from django.urls import reverse
 from requests.auth import HTTPBasicAuth
 
@@ -68,10 +69,12 @@ def delete_client_type(post_request, user_request):
 
 def create_wash_order_from_client_list(post_request, user_request):
     client_id = post_request.get('client_id', None)
+    max_count = WashOrder.objects.all().aggregate(max_count=Max('numbering'))
     wash_order = WashOrder.objects.create(client_id=client_id,
                                           user_id=user_request.id,
                                           status='during',
-                                          price=ProjectSetting.load().rate)
+                                          price=ProjectSetting.load().rate,
+                                          numbering=1 if max_count['max_count'] is None else max_count['max_count'] + 1)
 
     return dict(
         {'back_url': reverse(post_request.get('back_url', 'wash-order-detail'), kwargs={'pk': wash_order.pk}),

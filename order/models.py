@@ -63,6 +63,8 @@ class WashOrder(models.Model):
                               verbose_name='Цена')
     total = models.IntegerField(verbose_name='Общая сумма',
                                 default=0)
+    numbering = models.IntegerField(verbose_name='Нумерация',
+                                    unique=True)
 
     def __str__(self):
         return '{} | {}'.format(self.client, self.created_at)

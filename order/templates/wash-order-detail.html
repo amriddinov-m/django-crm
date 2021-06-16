@@ -21,7 +21,7 @@
             <div class="row page-titles mx-0 py-4">
                 <div class="col-md-6">
                     <div class="welcome-text">
-                        <h4 class="text-dark m-0">Заказ: {{ wash_order.client }} | №{{ wash_order.pk }}</h4>
+                        <h4 class="text-dark m-0">Заказ: {{ wash_order.client }} | №{{ wash_order.numbering }}</h4>
                     </div>
                 </div>
                 <div class="dropdown col-md-6">
@@ -535,7 +535,7 @@
             </tr>
         </table>
 
-        <h3 style="text-align: center;">НАКЛАДНАЯ № {{ wash_order.pk }} от {{ wash_order.created_at }}</h3>
+        <h3 style="text-align: center;">НАКЛАДНАЯ № {{ wash_order.numbering }} от {{ wash_order.created_at }}</h3>
         <hr/>
 
         <table style="width: 100%;text-align: center;" border="1">
