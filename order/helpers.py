@@ -157,7 +157,8 @@ def order_payment(post_request, user_request):
     payment_income(value_outlay_amount, value_outlay_amount_method, value_outlay_comment, user_request,
                    True, 1, wash_order.pk, order_pk=wash_order_pk)
     send_sms(wash_order.client.phone,
-             'Ваша оплата в сумме {} сум,по заказу №{} было принято'.format(value_outlay_amount, wash_order_pk))
+             'Ваша оплата в сумме {} сум,по заказу №{} было принято'.format(value_outlay_amount,
+                                                                            wash_order.numbering))
     return dict(
         {'back_url': reverse(post_request.get('back_url', 'wash-order-detail'), kwargs={'pk': wash_order.pk}),
          'data': ''})

@@ -133,13 +133,13 @@
                                                                 <tbody>
                                                                 <tr>
                                                                     <th>Общий расход с наличными</th>
-                                                                    <td>{{ sum_amount.payment_card_total_amount|default:0|intcomma|remove_zero }}
+                                                                    <td>{{ sum_amount.payment_cash_total_amount|default:0|intcomma|remove_zero }}
                                                                         Сум
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th>Общий расход без наличными</th>
-                                                                    <td>{{ sum_amount.payment_cash_total_amount|default:0|intcomma|remove_zero }}
+                                                                    <td>{{ sum_amount.payment_card_total_amount|default:0|intcomma|remove_zero }}
                                                                         Сум
                                                                     </td>
                                                                 </tr>
